@@ -1,0 +1,64 @@
+{
+  "model_name": "RF_Tuned",
+  "features": [
+    "attendance_rate",
+    "recent_attendance_rate",
+    "attendance_drop",
+    "assignment_completion_rate",
+    "missing_assignments",
+    "late_submission_rate",
+    "days_since_last_submission",
+    "previous_score_1",
+    "previous_score_2",
+    "previous_score_3",
+    "average_previous_score",
+    "score_trend",
+    "score_volatility"
+  ],
+  "features_with_missing": [
+    "attendance_rate",
+    "recent_attendance_rate",
+    "late_submission_rate",
+    "days_since_last_submission",
+    "attendance_drop"
+  ],
+  "target": "at_risk_next_assessment",
+  "target_definition": "1 = next_assessment_score < 40, 0 = otherwise",
+  "classification_threshold": 0.67,
+  "random_seed": 42,
+  "training_date": "2026-11-11 13:28:20",
+  "dataset_info": {
+    "file": "d:\\student-performance-risk-prediction\\data\\generated\\student_performance.csv",
+    "total_rows": 5000,
+    "train_rows": 3500,
+    "val_rows": 750,
+    "test_rows": 750,
+    "at_risk_rate_pct": 5.5
+  },
+  "best_cv_params": {
+    "model__random_state": 42,
+    "model__n_estimators": 100,
+    "model__min_samples_split": 2,
+    "model__min_samples_leaf": 4,
+    "model__max_features": "sqrt",
+    "model__max_depth": null,
+    "model__class_weight": "balanced"
+  },
+  "best_cv_pr_auc": 0.5511,
+  "validation_metrics": {
+    "Accuracy": 0.9467,
+    "Precision": 0.5,
+    "Recall": 0.35,
+    "F1": 0.4118,
+    "ROC-AUC": 0.9567,
+    "PR-AUC": 0.488
+  },
+  "test_metrics": {
+    "Accuracy": 0.9467,
+    "Precision": 0.5,
+    "Recall": 0.35,
+    "F1": 0.4118,
+    "ROC-AUC": 0.9567,
+    "PR-AUC": 0.488
+  }
+}
