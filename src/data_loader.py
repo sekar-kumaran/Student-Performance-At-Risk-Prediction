@@ -130,3 +130,20 @@ def render_responsible_ai_notice():
         """,
         unsafe_allow_html=True
     )
+
+
+def render_footer():
+    """Render application developer footer with GitHub profile link."""
+    st.markdown("---")
+    st.markdown(
+        """
+        <div style="text-align: center; color: #475569; font-size: 0.95rem; padding: 14px 0 20px 0;">
+            Developed by <strong style="color: #0F172A;">Sekar Kumaran</strong> &nbsp;|&nbsp; 
+            <a href="https://github.com/sekar-kumaran" target="_blank" style="color: #FF007F; text-decoration: none; font-weight: 600;">
+                GitHub: @sekar-kumaran ↗
+            </a>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+

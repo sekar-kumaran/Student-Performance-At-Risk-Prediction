@@ -4,7 +4,8 @@ from src.data_loader import (
     load_dataset,
     load_plotly_figure,
     get_kpis,
-    render_responsible_ai_notice
+    render_responsible_ai_notice,
+    render_footer
 )
 
 st.set_page_config(
@@ -114,3 +115,6 @@ with tab3:
 
 # Responsible AI Notice Banner
 render_responsible_ai_notice()
+
+# Developer Attribution Footer
+render_footer()

@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from src.data_loader import load_css, load_dataset, load_plotly_figure, render_responsible_ai_notice
+from src.data_loader import load_css, load_dataset, load_plotly_figure, render_responsible_ai_notice, render_footer
 
 st.set_page_config(
     page_title="Student Explorer — Student Performance Intelligence",
@@ -25,6 +25,7 @@ df = load_dataset()
 if df is None:
     st.warning("⚠️ The dataset CSV is currently unavailable. Please ensure `data/generated/student_performance.csv` exists.")
     render_responsible_ai_notice()
+    render_footer()
     st.stop()
 
 # Filter Controls Section
@@ -229,3 +230,6 @@ with st.expander("📊 View Feature Correlation Reference"):
         st.caption("Figure: Correlation matrix across academic indicators to contextualize student trends.")
 
 render_responsible_ai_notice()
+
+# Developer Attribution Footer
+render_footer()

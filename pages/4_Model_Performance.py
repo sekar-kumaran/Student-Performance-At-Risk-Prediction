@@ -1,5 +1,5 @@
 import streamlit as st
-from src.data_loader import load_css, load_plotly_figure, render_responsible_ai_notice
+from src.data_loader import load_css, load_plotly_figure, render_responsible_ai_notice, render_footer
 from src.model_loader import load_metadata, is_model_available
 
 st.set_page_config(
@@ -29,6 +29,7 @@ if metadata is None:
         "evaluate on the held-out test split, and generate the evaluation artifacts."
     )
     render_responsible_ai_notice()
+    render_footer()
     st.stop()
 
 # Model Architecture & Configuration Summary
@@ -232,3 +233,6 @@ st.markdown(
 )
 
 render_responsible_ai_notice()
+
+# Developer Attribution Footer
+render_footer()

@@ -2,12 +2,13 @@
 
 > **An ML-powered academic decision-support application for identifying students who may benefit from additional academic support.**
 
-Developed as part of the **AI & Machine Learning Internship Recruitment Assessment** for **Algions AI Labs Private Limited**.
+Developed by **[Sekar Kumaran](https://github.com/sekar-kumaran)** as part of the **AI & Machine Learning Internship Recruitment Assessment** for **Algions AI Labs Private Limited**.
 
+- **Developer:** [Sekar Kumaran](https://github.com/sekar-kumaran)
 - **Assigned Domain:** School Management
 - **Project Category:** Supervised Binary Classification / Predictive Analytics
 - **Primary Interface:** Streamlit Multi-Page Web Application
-- **Container Environment:** Docker (Specification & Local Deployment Blueprint)
+- **Container Environment:** Docker (`Dockerfile` included in repository)
 
 This project implements an end-to-end, reproducible machine learning pipeline and interactive decision-support interface. By monitoring observable pre-assessment behavioral signals—such as historical attendance decline, assignment submission punctuality, and prior assessment trajectories—the system flags students at risk of scoring below 40 on upcoming examinations 30 days in advance. 
 
@@ -388,52 +389,11 @@ student-performance-risk-prediction/
 
 ## Docker Setup & Container Execution
 
+The repository includes a ready-to-use [`Dockerfile`](Dockerfile) and [`.dockerignore`](.dockerignore).
+
 ### Prerequisites
 - Docker Engine installed (version 20.10+ or Docker Desktop on Windows/macOS).
 - Working directory: `student-performance-risk-prediction/`.
-
-### Container Specification
-To containerize this application, use the standardized container configuration:
-
-#### Dockerfile Blueprint
-```dockerfile
-FROM python:3.11-slim
-
-# Set working directory
-WORKDIR /app
-
-# Prevent Python from writing .pyc files and buffer stdout/stderr
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install Python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy application source code and artifacts
-COPY app.py .
-COPY pages/ pages/
-COPY src/ src/
-COPY assets/ assets/
-COPY artifacts/ artifacts/
-COPY data/ data/
-COPY reports/ reports/
-
-# Expose Streamlit default port
-EXPOSE 8501
-
-# Streamlit health check
-HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health || exit 1
-
-# Launch Streamlit server
-ENTRYPOINT ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
-```
 
 ### Docker Commands
 
@@ -469,8 +429,6 @@ docker rm student-performance-app
 docker build -t student-performance-app .
 docker run -d -p 8501:8501 --name student-performance-app student-performance-app
 ```
-
-> **Implementation Status Note:** The Docker container specification above represents the deployment blueprint. Verification testing of this project was executed directly within a Python 3.11 virtual environment; container engine build execution was not performed inside this development sandbox.
 
 ---
 
@@ -557,6 +515,8 @@ Machine learning models deployed in educational environments require strict ethi
 
 ## Assessment Attribution & AI Assistance Disclosure
 
+- **Developer:** [Sekar Kumaran](https://github.com/sekar-kumaran)
+- **GitHub Repository:** [sekar-kumaran/Student-Performance-At-Risk-Prediction](https://github.com/sekar-kumaran/Student-Performance-At-Risk-Prediction)
 - **Assessment Target:** AI & Machine Learning Internship Recruitment Assessment
 - **Organization:** **Algions AI Labs Private Limited**
 - **Domain:** School Management

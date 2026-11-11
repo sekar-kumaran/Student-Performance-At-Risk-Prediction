@@ -1,5 +1,5 @@
 import streamlit as st
-from src.data_loader import load_css, load_dataset, render_responsible_ai_notice
+from src.data_loader import load_css, load_dataset, render_responsible_ai_notice, render_footer
 from src.model_loader import is_model_available
 
 # Page configuration
@@ -43,6 +43,19 @@ with st.sidebar:
         st.markdown("✅ Model Artifact: `Ready`")
     else:
         st.markdown("⚠️ Model Artifact: *Not Found*")
+
+    st.markdown("---")
+    st.markdown(
+        """
+        <div style="font-size: 0.88rem; color: #000000;">
+            Developed by <strong>Sekar Kumaran</strong><br>
+            <a href="https://github.com/sekar-kumaran" target="_blank" style="color: #000000; font-weight: 600; text-decoration: underline;">
+                GitHub Profile ↗
+            </a>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 # Main Page Header
 st.title("🎓 Student Performance Intelligence")
@@ -132,3 +145,6 @@ c4.metric("Horizon", "30 Days", "Forward Looking")
 
 # Responsible AI Notice
 render_responsible_ai_notice()
+
+# Developer Attribution Footer
+render_footer()
