@@ -1,17 +1,28 @@
+from __future__ import annotations
+
+import sys
 import json
 from pathlib import Path
 import streamlit as st
 import joblib
 
+# Ensure repository root is on sys.path
+_repo_root = str(Path(__file__).resolve().parent.parent)
+if _repo_root not in sys.path:
+    sys.path.insert(0, _repo_root)
+
 
 def get_project_root() -> Path:
     """Safely locate the project root directory."""
+    file_root = Path(__file__).resolve().parent.parent
+    if (file_root / "artifacts").exists() or (file_root / "data").exists():
+        return file_root
     current = Path.cwd()
     if (current / "artifacts").exists() or (current / "data").exists():
         return current
     elif (current.parent / "artifacts").exists() or (current.parent / "data").exists():
         return current.parent
-    return current
+    return file_root
 
 
 @st.cache_resource(show_spinner="Loading predictive model...")

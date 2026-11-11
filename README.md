@@ -2,23 +2,25 @@
 
 > **An ML-powered academic decision-support application for identifying students who may benefit from additional academic support.**
 
-Developed by **[Sekar Kumaran](https://github.com/sekar-kumaran)** as part of the **AI & Machine Learning Internship Recruitment Assessment** for **Algions AI Labs Private Limited**.
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://student-performance-at-risk-prediction.streamlit.app/)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?logo=github)](https://github.com/sekar-kumaran/Student-Performance-At-Risk-Prediction)
 
+- **Live Deployed Application:** [student-performance-at-risk-prediction.streamlit.app](https://student-performance-at-risk-prediction.streamlit.app/)
 - **Developer:** [Sekar Kumaran](https://github.com/sekar-kumaran)
-- **Assigned Domain:** School Management
+- **Domain:** School Management / Academic Performance Analytics
 - **Project Category:** Supervised Binary Classification / Predictive Analytics
 - **Primary Interface:** Streamlit Multi-Page Web Application
 - **Container Environment:** Docker (`Dockerfile` included in repository)
 
 This project implements an end-to-end, reproducible machine learning pipeline and interactive decision-support interface. By monitoring observable pre-assessment behavioral signals—such as historical attendance decline, assignment submission punctuality, and prior assessment trajectories—the system flags students at risk of scoring below 40 on upcoming examinations 30 days in advance. 
 
-*Disclaimer: This software is an assessment implementation and decision-support prototype. It is designed to assist academic mentors and counselors in prioritizing supportive outreach, and is explicitly not an automated grading, punitive, or tracking platform.*
+*Disclaimer: This software is a decision-support prototype designed to assist academic mentors and counselors in prioritizing supportive outreach, and is explicitly not an automated grading, punitive, or tracking platform.*
 
 ---
 
 ## Table of Contents
 
-1. [Recruitment Assessment Context](#recruitment-assessment-context)
+1. [Project Background & Objectives](#project-background--objectives)
 2. [Problem Statement](#problem-statement)
 3. [Prediction Objective & Target Definition](#prediction-objective--target-definition)
 4. [Key Technical Decisions & Engineering Rationale](#key-technical-decisions--engineering-rationale)
@@ -31,15 +33,13 @@ This project implements an end-to-end, reproducible machine learning pipeline an
 11. [Local Development Setup](#local-development-setup)
 12. [Reproducibility & Verification Testing](#reproducibility--verification-testing)
 13. [Responsible AI & Ethical Limitations](#responsible-ai--ethical-limitations)
-14. [Assessment Attribution & AI Assistance Disclosure](#assessment-attribution--ai-assistance-disclosure)
+14. [Project Attribution & AI Assistance Disclosure](#project-attribution--ai-assistance-disclosure)
 
 ---
 
-## Recruitment Assessment Context
+## Project Background & Objectives
 
-This project was engineered to satisfy the recruitment assessment requirements for the **AI & Machine Learning Internship** at **Algions AI Labs Private Limited**.
-
-The objective of the assignment was to develop a complete, mathematically sound, and leak-free machine learning solution for academic decision support within a school management context. Candidates were required to demonstrate competence across the complete ML engineering lifecycle:
+The primary objective of this project is to develop a complete, mathematically sound, and leak-free machine learning decision-support solution within a school management context:
 - Controlled data synthesis and exploratory data analysis (EDA).
 - Principled feature engineering and strict temporal leakage prevention.
 - Chronological train/validation/test partitioning.
@@ -48,8 +48,6 @@ The objective of the assignment was to develop a complete, mathematically sound,
 - Hyperparameter tuning and decision threshold optimization for imbalanced classification.
 - Model interpretability and error analysis.
 - Production-style serialization and interactive UI delivery.
-
-This repository reflects an assessment implementation; it is not an officially deployed enterprise school management platform.
 
 ---
 
@@ -85,8 +83,17 @@ The operational specification for the predictive task is formalized below:
 | **Dataset Type** | Synthetic (`numpy.random.default_rng(seed=42)`) |
 | **Class Balance** | 275 At-Risk (5.5%) vs. 4,725 Not At-Risk (94.5%) — ~17:1 ratio |
 
-### Target Formula
-$$\text{at\_risk\_next\_assessment} = \begin{cases} 1 & \text{if } \text{next\_assessment\_score} < 40 \\ 0 & \text{if } \text{next\_assessment\_score} \ge 40 \end{cases}$$
+### Target Definition & Formula
+
+```python
+at_risk_next_assessment = 1 if next_assessment_score < 40 else 0
+```
+
+Mathematically formalized as:
+
+$$y_i = \begin{cases} 1 & \text{if } s_i < 40 \\ 0 & \text{if } s_i \ge 40 \end{cases}$$
+
+where $y_i \in \{0, 1\}$ represents `at_risk_next_assessment` and $s_i \in [0, 100]$ represents `next_assessment_score`.
 
 ### Data Leakage Prevention Guarantee
 - `next_assessment_score` and `next_assessment_date` are future outcomes used strictly for ground-truth labeling and held-out validation.
@@ -513,17 +520,16 @@ Machine learning models deployed in educational environments require strict ethi
 
 ---
 
-## Assessment Attribution & AI Assistance Disclosure
+## Project Attribution & AI Assistance Disclosure
 
 - **Developer:** [Sekar Kumaran](https://github.com/sekar-kumaran)
+- **Live Deployed Application:** [student-performance-at-risk-prediction.streamlit.app](https://student-performance-at-risk-prediction.streamlit.app/)
 - **GitHub Repository:** [sekar-kumaran/Student-Performance-At-Risk-Prediction](https://github.com/sekar-kumaran/Student-Performance-At-Risk-Prediction)
-- **Assessment Target:** AI & Machine Learning Internship Recruitment Assessment
-- **Organization:** **Algions AI Labs Private Limited**
-- **Domain:** School Management
+- **Domain:** School Management / Academic Performance Analytics
 - **Key Technologies:** Python 3.11, Scikit-learn, Pandas, NumPy, Plotly, Streamlit, Joblib, Docker
 
 ### AI Assistance Statement
-In accordance with Algions AI Labs assessment guidelines requiring transparent disclosure of generative tools:
+In accordance with transparent disclosure best practices for generative tools:
 - **Assisting Tool:** Antigravity AI Pair Programming Agent (Google DeepMind).
 - **Scope of AI Assistance:** Used for architectural ideation, code review, refactoring assistance (such as snake_case naming conventions and Plotly encoding error diagnostics), and technical documentation synthesis.
 - **Verification:** All dataset generation logic, mathematical feature derivations, cross-validation tuning grids, model metrics, and UI scripts were executed, validated, and verified directly against the underlying codebase.

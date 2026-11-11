@@ -1,3 +1,11 @@
+import sys
+from pathlib import Path
+
+# Ensure application repository root is at the head of sys.path
+_repo_dir = str(Path(__file__).resolve().parent)
+if _repo_dir not in sys.path:
+    sys.path.insert(0, _repo_dir)
+
 import streamlit as st
 from src.data_loader import load_css, load_dataset, render_responsible_ai_notice, render_footer
 from src.model_loader import is_model_available

@@ -1,17 +1,30 @@
+from __future__ import annotations
+
+import sys
 from pathlib import Path
+from typing import Optional, Dict, Any, List
+
 import streamlit as st
 import pandas as pd
 import plotly.io as pio
 
+# Ensure repository root is on sys.path
+_repo_root = str(Path(__file__).resolve().parent.parent)
+if _repo_root not in sys.path:
+    sys.path.insert(0, _repo_root)
+
 
 def get_project_root() -> Path:
     """Safely locate the project root directory."""
+    file_root = Path(__file__).resolve().parent.parent
+    if (file_root / "data").exists() or (file_root / "artifacts").exists() or (file_root / "reports").exists():
+        return file_root
     current = Path.cwd()
     if (current / "data").exists() or (current / "reports").exists():
         return current
     elif (current.parent / "data").exists() or (current.parent / "reports").exists():
         return current.parent
-    return current
+    return file_root
 
 
 def load_css():
@@ -24,7 +37,7 @@ def load_css():
 
 
 @st.cache_data(show_spinner="Loading student records...")
-def load_dataset() -> pd.DataFrame | None:
+def load_dataset() -> Optional[pd.DataFrame]:
     """
     Load the synthetic educational dataset.
     Returns DataFrame if found, or None with a friendly warning.

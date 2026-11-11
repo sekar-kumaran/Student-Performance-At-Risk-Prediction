@@ -1,3 +1,11 @@
+import sys
+from pathlib import Path
+
+# Ensure repository root is on sys.path
+_repo_dir = str(Path(__file__).resolve().parent.parent)
+if _repo_dir not in sys.path:
+    sys.path.insert(0, _repo_dir)
+
 import streamlit as st
 from src.data_loader import (
     load_css,
