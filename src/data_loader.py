@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 from typing import Optional, Dict, Any, List
@@ -7,6 +8,7 @@ from typing import Optional, Dict, Any, List
 import streamlit as st
 import pandas as pd
 import plotly.io as pio
+import plotly.graph_objects as go
 
 # Ensure repository root is on sys.path
 _repo_root = str(Path(__file__).resolve().parent.parent)
@@ -75,7 +77,21 @@ def load_plotly_figure(filename: str):
         except UnicodeDecodeError:
             json_str = raw_bytes.decode("cp1252", errors="replace")
 
-        fig = pio.from_json(json_str)
+        # Strip template properties removed in newer Plotly versions (e.g., heatmapgl in Plotly 6+)
+        fig_dict = json.loads(json_str)
+        tmpl = fig_dict.get("layout", {}).get("template")
+        if isinstance(tmpl, dict):
+            tmpl_data = tmpl.get("data")
+            if isinstance(tmpl_data, dict):
+                valid_props = getattr(go.layout.template.Data, "_valid_props", None)
+                if valid_props:
+                    for key in list(tmpl_data.keys()):
+                        if key not in valid_props:
+                            del tmpl_data[key]
+                else:
+                    tmpl_data.pop("heatmapgl", None)
+
+        fig = pio.from_json(json.dumps(fig_dict), skip_invalid=True)
 
         # Style layout for the clean white-based light theme
         fig.update_layout(
