@@ -69,6 +69,27 @@ ul[data-testid="stSidebarNavItems"] a {
     font-weight: 700 !important;
 }
 
+/* Header & Inline Code Pills — force white background and crisp dark text */
+header[data-testid="stHeader"] {
+    background: rgba(255, 255, 255, 0.92) !important;
+}
+
+code, pre, kbd {
+    background-color: #FFFFFF !important;
+    color: #0F172A !important;
+    border: 1px solid #CBD5E1 !important;
+    border-radius: 5px !important;
+    padding: 2px 6px !important;
+    font-weight: 600 !important;
+}
+
+[data-testid="stSidebar"] code,
+[data-testid="stSidebar"] pre {
+    background-color: #FFFFFF !important;
+    color: #000000 !important;
+    border: 1px solid #CBD5E1 !important;
+}
+
 /* Metric KPI Cards */
 div[data-testid="stMetric"] {
     background: #FFFFFF !important;
@@ -97,6 +118,27 @@ div[data-testid="stMetricValue"] {
     color: #0F172A !important;
     font-size: 1.8rem !important;
     font-weight: 700 !important;
+}
+
+div[data-testid="stMetricDelta"] {
+    background-color: #FFFFFF !important;
+    color: #15803D !important;
+    border: 1px solid #CBD5E1 !important;
+    border-radius: 999px !important;
+    padding: 2px 10px !important;
+    width: fit-content !important;
+    font-weight: 600 !important;
+}
+
+div[data-testid="stMetricDelta"] > div,
+div[data-testid="stMetricDelta"] span {
+    color: #15803D !important;
+    background-color: transparent !important;
+}
+
+div[data-testid="stMetricDelta"] svg {
+    fill: #15803D !important;
+    color: #15803D !important;
 }
 
 /* Buttons — Primary Accent #FF007F */
