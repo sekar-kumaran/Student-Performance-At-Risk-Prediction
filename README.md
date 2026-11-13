@@ -375,6 +375,13 @@ student-performance-risk-prediction/
 │   ├── dataset.ipynb                  # Day 1: Synthetic data generation & validation (Seed 42)
 │   └── ml_pipeline.ipynb              # Day 2: Complete ML pipeline (split, tune, evaluate, export)
 │
+├── tests/                             # Automated test suite (pytest)
+│   ├── __init__.py
+│   ├── conftest.py                    # Shared fixtures (metadata, low/high-risk & edge profiles)
+│   ├── test_data_and_leakage.py       # Data integrity, schema, ethical guardrails & anti-leakage
+│   ├── test_model_and_artifacts.py    # Artifact completeness, defensibility & pipeline interfaces
+│   └── test_inference.py              # Live inference, monotonicity, explainability & determinism
+│
 └── reports/
     └── figures/                       # Pre-computed Plotly JSON & HTML visualizations
         ├── assignment_completion_distribution.html & .json
@@ -491,7 +498,21 @@ Open and run all cells in `notebooks/ml_pipeline.ipynb`:
 - Evaluates held-out test data and exports `artifacts/model.joblib` and `artifacts/metadata.json`.
 - Exports all 10 diagnostic Plotly charts to `reports/figures/`.
 
-### 3. Run Automated Streamlit Verification Tests
+### 3. Run Production Pytest Test Suite
+Execute the comprehensive unit and integration test suite (31 tests validating data integrity, anti-leakage, ethical AI guardrails, model artifacts, and real-time inference):
+
+```bash
+pytest -v
+```
+
+The automated test suite validates:
+- **Data Hygiene & Schema (`tests/test_data_and_leakage.py`):** Non-empty dataset ($5,000$ records), schema completeness, binary target integrity, chronological sorting, and KPI calculation resilience.
+- **Ethical AI Guardrails (`tests/test_data_and_leakage.py`):** Strictly asserts that prohibited demographic or sensitive attributes (`gender`, `sex`, `race`, `ethnicity`, `caste`, `religion`, `income`, `socioeconomic_status`, `student_name`, `email`, etc.) and database keys (`student_id`, `cohort_id`) are absent from model features.
+- **Anti-Leakage Verification (`tests/test_data_and_leakage.py`):** Asserts target variables (`at_risk_next_assessment`) and future assessment outcomes (`next_assessment_score`, `next_assessment_date`) are strictly excluded from model inputs, and validates mathematical derivations for all engineered features.
+- **Artifacts & Model Interface (`tests/test_model_and_artifacts.py`):** Validates `artifacts/metadata.json` completeness, chronological split row accounting ($3,500 / 750 / 750 = 5,000$), real pipeline serialization loading via `src.model_loader`, callable `.predict()` / `.predict_proba()` methods, and defensible float metric ranges ($0.0 \le \text{metric} \le 1.0$).
+- **Live Inference & Monotonicity (`tests/test_inference.py`):** Confirms non-hardcoded dynamic prediction execution, strict probability bounds ($[0.0, 1.0]$), directional risk monotonicity ($P(\text{Risk} \mid \text{High-Risk}) > P(\text{Risk} \mid \text{Borderline}) > P(\text{Risk} \mid \text{Low-Risk})$), explainability payloads with tailored recommendations, classification threshold sensitivity, and bitwise prediction determinism.
+
+### 4. Run Automated Streamlit Verification Tests
 The integrity of `app.py` and all 4 multi-page modules can be verified programmatically using Streamlit's testing harness:
 ```bash
 python -c "

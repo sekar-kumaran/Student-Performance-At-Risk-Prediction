@@ -12,11 +12,19 @@ ENV/
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints/
 
+# Pytest cache
+.pytest_cache/
+
 # IDE / Editor folders
 .vscode/
 .idea/
 *.swp
 *.swo
+
+# Local notes, assessment docs, and archives
+*.zip
+*.docx
+VIDEO_PRESENTATION_SCRIPT.md
 
 # OS temporary files
 Thumbs.db
