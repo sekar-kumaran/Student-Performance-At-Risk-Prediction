@@ -51,30 +51,8 @@ if model is None or metadata is None:
     st.stop()
 
 expected_features = metadata.get("features", [])
+chosen_threshold = float(metadata.get("classification_threshold", 0.67))
 model_name = metadata.get("model_name", "Random Forest")
-base_threshold = float(metadata.get("classification_threshold", 0.67))
-
-# Decision Threshold Control
-col_thresh1, col_thresh2 = st.columns([1.8, 1.2])
-with col_thresh1:
-    chosen_threshold = st.slider(
-        "🎯 Intervention Decision Threshold",
-        min_value=0.30,
-        max_value=0.85,
-        value=0.50,
-        step=0.01,
-        help="Standard early-warning threshold is 50% (0.50). Model F1-optimal research baseline is 67% (0.67)."
-    )
-with col_thresh2:
-    st.markdown(
-        f"""
-        <div style='font-size:0.83rem; color:#64748B; padding-top:24px;'>
-            <strong>Active Cutoff:</strong> {chosen_threshold*100:.0f}%<br>
-            <strong>Research Baseline:</strong> {base_threshold*100:.0f}% (F1 Peak)
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
 
 # Preset selection buttons for convenience
 st.markdown("### ⚡ Quick Scenario Presets")
@@ -255,33 +233,16 @@ if submit_button:
     res_col1, res_col2 = st.columns([1.2, 1.8])
 
     with res_col1:
-        proba = result["probability"]
-        if result["is_at_risk"] or proba >= 0.50:
+        if result["is_at_risk"]:
             st.markdown(
                 f"""
                 <div class="glass-card" style="border-left: 4px solid #FF007F; background: #FFF5F8;">
                     <span class="badge-at-risk">⚠️ AT-RISK IDENTIFIED</span>
-                    <h2 style="color: #D80064; margin: 12px 0 4px 0;">{proba*100:.1f}%</h2>
+                    <h2 style="color: #D80064; margin: 12px 0 4px 0;">{result['probability']*100:.1f}%</h2>
                     <p style="color:#64748B; font-size:0.85rem; margin:0;">Predicted probability of scoring &lt; 40</p>
                     <hr style="border-color: #E2E8F0; margin: 12px 0;">
                     <p style="color: #334155; font-size:0.92rem; margin:0;">
                         <strong>Advisory:</strong> {result['advisory_status']}<br>
-                        <strong>Decision Threshold:</strong> {result['threshold']*100:.0f}%
-                    </p>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-        elif proba >= 0.35:
-            st.markdown(
-                f"""
-                <div class="glass-card" style="border-left: 4px solid #F59E0B; background: #FFFBEB;">
-                    <span style="background:#FEF3C7; color:#B45309; padding:4px 10px; border-radius:12px; font-weight:600; font-size:0.75rem;">⚡ ELEVATED RISK / WATCHLIST</span>
-                    <h2 style="color: #D97706; margin: 12px 0 4px 0;">{proba*100:.1f}%</h2>
-                    <p style="color:#64748B; font-size:0.85rem; margin:0;">Predicted probability of scoring &lt; 40</p>
-                    <hr style="border-color: #E2E8F0; margin: 12px 0;">
-                    <p style="color: #334155; font-size:0.92rem; margin:0;">
-                        <strong>Advisory:</strong> Elevated Risk — Academic Monitoring Advised<br>
                         <strong>Decision Threshold:</strong> {result['threshold']*100:.0f}%
                     </p>
                 </div>
@@ -293,7 +254,7 @@ if submit_button:
                 f"""
                 <div class="glass-card" style="border-left: 4px solid #22C55E; background: #F0FDF4;">
                     <span class="badge-low-risk">✓ ON TRACK</span>
-                    <h2 style="color: #15803D; margin: 12px 0 4px 0;">{proba*100:.1f}%</h2>
+                    <h2 style="color: #15803D; margin: 12px 0 4px 0;">{result['probability']*100:.1f}%</h2>
                     <p style="color:#64748B; font-size:0.85rem; margin:0;">Predicted probability of scoring &lt; 40</p>
                     <hr style="border-color: #E2E8F0; margin: 12px 0;">
                     <p style="color: #334155; font-size:0.92rem; margin:0;">
