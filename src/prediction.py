@@ -46,7 +46,7 @@ def prepare_student_features(raw_inputs: dict, feature_order: list[str]) -> pd.D
     return pd.DataFrame([row])
 
 
-def predict_risk(model, features_df: pd.DataFrame, threshold: float = 0.67) -> dict:
+def predict_risk(model, features_df: pd.DataFrame, threshold: float = 0.50) -> dict:
     """
     Generate real probability and binary classification advisory
     using the fitted pipeline and validated threshold.
@@ -67,9 +67,13 @@ def predict_risk(model, features_df: pd.DataFrame, threshold: float = 0.67) -> d
 
     is_at_risk = proba >= threshold
 
+    # An identified at-risk student or a student with elevated failure probability (>=50%)
+    # requires priority academic tutoring and intervention rather than passive monitoring.
+    is_support_needed = is_at_risk or (proba >= 0.50)
+
     # Generate tailored actionable advice
     recommendations = []
-    if is_at_risk:
+    if is_support_needed:
         recommendations.append("Priority academic tutoring recommendation before next assessment.")
         if features_df["assignment_completion_rate"].iloc[0] < 50.0:
             recommendations.append("Follow-up on missing/incomplete assignments with course mentor.")
@@ -77,6 +81,12 @@ def predict_risk(model, features_df: pd.DataFrame, threshold: float = 0.67) -> d
             recommendations.append("Investigate sudden attendance drop in recent weeks.")
         if features_df["score_trend"].iloc[0] < -5.0:
             recommendations.append("Address downward trajectory observed across historical exams.")
+    elif proba >= 0.35:
+        recommendations.append("Advisory: Student performance shows emerging risk factors. Schedule proactive review.")
+        if features_df["late_submission_rate"].iloc[0] > 30.0:
+            recommendations.append("Advisory: Late submissions are elevated; reinforce punctuality.")
+        if features_df["attendance_drop"].iloc[0] > 5.0:
+            recommendations.append("Investigate recent attendance decline.")
     else:
         recommendations.append("Student is currently performing on track. Maintain standard monitoring.")
         if features_df["late_submission_rate"].iloc[0] > 30.0:
@@ -86,8 +96,8 @@ def predict_risk(model, features_df: pd.DataFrame, threshold: float = 0.67) -> d
         "probability": round(proba, 4),
         "threshold": round(threshold, 2),
         "is_at_risk": is_at_risk,
-        "label": "At-Risk" if is_at_risk else "Low Risk",
-        "advisory_status": "Requires Additional Academic Support" if is_at_risk else "Satisfactory Academic Progress",
+        "label": "At-Risk" if is_support_needed else "Low Risk",
+        "advisory_status": "Requires Additional Academic Support" if is_support_needed else "Satisfactory Academic Progress",
         "recommendations": recommendations,
         "derived_features": {
             "attendance_drop": round(float(features_df["attendance_drop"].iloc[0]), 2),
