@@ -25,6 +25,50 @@ def get_project_root() -> Path:
     return file_root
 
 
+def patch_model_compatibility(model):
+    """
+    Ensure backward and forward compatibility across scikit-learn versions.
+    Scikit-learn 1.5+ introduces `_fill_dtype` on SimpleImputer during transform().
+    Models serialized in scikit-learn <1.5 lack this attribute, which raises
+    AttributeError when transform() is executed in scikit-learn 1.5+.
+    """
+    if model is None:
+        return model
+
+    import numpy as np
+
+    def _patch_est(est):
+        if est is None:
+            return
+        if est.__class__.__name__ == "SimpleImputer":
+            if not hasattr(est, "_fill_dtype"):
+                if hasattr(est, "statistics_") and hasattr(est.statistics_, "dtype"):
+                    est._fill_dtype = est.statistics_.dtype
+                else:
+                    est._fill_dtype = np.dtype("float64")
+
+        # Recurse Pipeline steps
+        if hasattr(est, "steps"):
+            for _, step in est.steps:
+                _patch_est(step)
+        if hasattr(est, "named_steps"):
+            for _, step in est.named_steps.items():
+                _patch_est(step)
+
+        # Recurse ColumnTransformer
+        if hasattr(est, "transformers_"):
+            for item in est.transformers_:
+                if len(item) >= 2:
+                    _patch_est(item[1])
+        if hasattr(est, "transformers"):
+            for item in est.transformers:
+                if len(item) >= 2:
+                    _patch_est(item[1])
+
+    _patch_est(model)
+    return model
+
+
 @st.cache_resource(show_spinner="Loading predictive model...")
 def load_model():
     """
@@ -37,7 +81,7 @@ def load_model():
         return None
     try:
         model = joblib.load(model_path)
-        return model
+        return patch_model_compatibility(model)
     except Exception as e:
         st.error(f"Error loading model artifact: {e}")
         return None

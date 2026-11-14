@@ -51,6 +51,13 @@ def predict_risk(model, features_df: pd.DataFrame, threshold: float = 0.67) -> d
     Generate real probability and binary classification advisory
     using the fitted pipeline and validated threshold.
     """
+    if model is not None:
+        try:
+            from src.model_loader import patch_model_compatibility
+            patch_model_compatibility(model)
+        except Exception:
+            pass
+
     try:
         proba = float(model.predict_proba(features_df)[:, 1][0])
     except Exception:
